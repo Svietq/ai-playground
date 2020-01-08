@@ -19,6 +19,13 @@ def default_mutation(individual):
     individual[random_index] = int(not individual[random_index])
 
 
+def default_crossover(left_individual, right_individual):
+    individual_size = len(left_individual)
+    pivot = np.random.randint(0, individual_size)
+    return np.concatenate([left_individual[0:pivot], right_individual[pivot:individual_size]]), \
+           np.concatenate([right_individual[0:pivot], left_individual[pivot:individual_size]])
+
+
 class GeneticAlgorithm:
     def __init__(self,
                  individual_function=default_individual_creation,
@@ -28,7 +35,8 @@ class GeneticAlgorithm:
                  mutation_rate=0.1,
                  max_iterations_number=1000,
                  goal_function=None,
-                 fitness_function=sum):
+                 fitness_function=sum,
+                 crossover_function=default_crossover):
         self.individual_size = individual_size
         self.Population = [individual_function(individual_size) for _ in range(population_size)]
         self.mutation_function = mutation_function
@@ -38,6 +46,7 @@ class GeneticAlgorithm:
         self.goal_function = goal_function
         self.fitness_function = fitness_function
         self.fitness_values = []
+        self.crossover_function = crossover_function
 
     def is_goal_met(self):
         return ((self.goal_function is not None) and self.goal_function()) or \
@@ -73,19 +82,15 @@ class GeneticAlgorithm:
         assert(len(left_individuals) == len(right_individuals))
 
         for index in range(len(left_individuals)):
-            pivot = np.random.randint(0, self.individual_size)
             left_individual = left_individuals[index]
             right_individual = right_individuals[index]
-            left_individual, right_individual = \
-                np.concatenate([left_individual[0:pivot], right_individual[pivot:self.individual_size]]), \
-                np.concatenate([right_individual[0:pivot], left_individual[pivot:self.individual_size]])
-
+            left_individual, right_individual = self.crossover_function(left_individual, right_individual)
             self.Population[index * 2] = left_individual
             self.Population[index * 2 + 1] = right_individual
 
     def mutate_individuals(self):
         for individual in self.Population:
-            if (self.mutation_function is not None) and (np.random.uniform() < self.mutation_rate):
+            if np.random.uniform() < self.mutation_rate:
                 self.mutation_function(individual)
 
     def print_stats(self):
