@@ -3,28 +3,35 @@ from matplotlib import pyplot as plt
 import pprint
 
 # Exemplary code for setting up and running genetic algorithm
-# ga = GeneticAlgorithm(population_function=None,
-#                       individual_size=10,
+# ga = GeneticAlgorithm(individual_size=10,
 #                       population_size=100,
 #                       mutation_rate=0.1,
-#                       max_iterations_number=1000,
-#                       goal_function=None,
-#                       fitness_function=sum)
+#                       max_iterations_number=1000)
 # ga.run_algorithm()
+
+
+def default_individual_creation(individual_size):
+    return np.random.randint(2, size=individual_size)
+
+
+def default_mutation(individual):
+    random_index = np.random.randint(0, len(individual))
+    individual[random_index] = int(not individual[random_index])
 
 
 class GeneticAlgorithm:
     def __init__(self,
-                 individual_function,
-                 individual_size,
-                 population_size,
-                 mutation_rate,
-                 max_iterations_number,
-                 goal_function,
-                 fitness_function):
+                 individual_function=default_individual_creation,
+                 individual_size=10,
+                 population_size=100,
+                 mutation_function=default_mutation,
+                 mutation_rate=0.1,
+                 max_iterations_number=1000,
+                 goal_function=None,
+                 fitness_function=sum):
         self.individual_size = individual_size
-        self.Population = np.random.randint(2, size=(population_size, individual_size)) if individual_function is None\
-            else [individual_function(individual_size) for _ in range(population_size)]
+        self.Population = [individual_function(individual_size) for _ in range(population_size)]
+        self.mutation_function = mutation_function
         self.mutation_rate = mutation_rate
         self.iterations_number = 0
         self.max_iterations_number = max_iterations_number
@@ -78,9 +85,8 @@ class GeneticAlgorithm:
 
     def mutate_individuals(self):
         for individual in self.Population:
-            if np.random.uniform() < self.mutation_rate:
-                random_index = np.random.randint(0, self.individual_size)
-                individual[random_index] = int(not individual[random_index])
+            if (self.mutation_function is not None) and (np.random.uniform() < self.mutation_rate):
+                self.mutation_function(individual)
 
     def print_stats(self):
         # print("---------------------------")

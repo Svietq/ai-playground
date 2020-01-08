@@ -13,12 +13,18 @@ def create_individual(individual_size):
     return individual
 
 
+def swap_two_elements(individual):
+    indices = range(len(individual))
+    index1, index2 = random.sample(indices, 2)
+    individual[index1], individual[index2] = individual[index2], individual[index1]
+
+
 ga = GeneticAlgorithm(individual_function=create_individual,
                       individual_size=NUMBER_OF_CITIES,
                       population_size=100,
+                      mutation_function=swap_two_elements,
                       mutation_rate=0.1,
                       max_iterations_number=1000,
-                      goal_function=None,
                       fitness_function=sum)
 
 ga.run_algorithm()

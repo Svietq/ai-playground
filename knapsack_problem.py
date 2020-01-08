@@ -35,12 +35,10 @@ print("Items weigths: ", items_weights)
 print("TOTAL_MAX_WEIGHT: ", TOTAL_MAX_WEIGHT)
 print("backpack_capacity: ", BACKPACK_CAPACITY)
 
-ga = GeneticAlgorithm(individual_function=None,
-                      individual_size=ITEMS_NUMBER,
+ga = GeneticAlgorithm(individual_size=ITEMS_NUMBER,
                       population_size=10,
                       mutation_rate=0.01,
                       max_iterations_number=1000,
-                      goal_function=None,
                       fitness_function=calc_fit)
 ga.run_algorithm()
 
