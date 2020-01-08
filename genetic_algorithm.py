@@ -1,20 +1,30 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import pprint
 
 # Exemplary code for setting up and running genetic algorithm
-# ga = GeneticAlgorithm(individual_size=10,
+# ga = GeneticAlgorithm(population_function=None,
+#                       individual_size=10,
 #                       population_size=100,
 #                       mutation_rate=0.1,
-#                       max_iterations_number=1000
-#                       goal_function = None
+#                       max_iterations_number=1000,
+#                       goal_function=None,
 #                       fitness_function=sum)
 # ga.run_algorithm()
 
 
 class GeneticAlgorithm:
-    def __init__(self, individual_size, population_size, mutation_rate, max_iterations_number, goal_function, fitness_function):
+    def __init__(self,
+                 individual_function,
+                 individual_size,
+                 population_size,
+                 mutation_rate,
+                 max_iterations_number,
+                 goal_function,
+                 fitness_function):
         self.individual_size = individual_size
-        self.Population = np.random.randint(2, size=(population_size, individual_size))
+        self.Population = np.random.randint(2, size=(population_size, individual_size)) if individual_function is None\
+            else [individual_function(individual_size) for _ in range(population_size)]
         self.mutation_rate = mutation_rate
         self.iterations_number = 0
         self.max_iterations_number = max_iterations_number
@@ -59,8 +69,9 @@ class GeneticAlgorithm:
             pivot = np.random.randint(0, self.individual_size)
             left_individual = left_individuals[index]
             right_individual = right_individuals[index]
-            left_individual, right_individual = np.concatenate([left_individual[0:pivot], right_individual[pivot:self.individual_size]]), \
-                                                np.concatenate([right_individual[0:pivot], left_individual[pivot:self.individual_size]])
+            left_individual, right_individual = \
+                np.concatenate([left_individual[0:pivot], right_individual[pivot:self.individual_size]]), \
+                np.concatenate([right_individual[0:pivot], left_individual[pivot:self.individual_size]])
 
             self.Population[index * 2] = left_individual
             self.Population[index * 2 + 1] = right_individual
@@ -95,5 +106,7 @@ class GeneticAlgorithm:
             self.print_stats()
 
         print("Population found: ")
-        print(self.Population)
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(self.Population)
+
         self.plot_stats()
