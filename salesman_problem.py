@@ -5,7 +5,7 @@ import pandas
 # Genetic algorithm to solve travelling salesman problem
 # wikipedia link: https://en.wikipedia.org/wiki/Travelling_salesman_problem
 
-cities_costs = pandas.read_excel('salesman_problem.xls', sheet_name='Arkusz1')
+cities_costs = pandas.read_excel('salesman_problem.xlsx', sheet_name='Sheet1')
 NUMBER_OF_CITIES = len(cities_costs.columns) - 1
 
 
@@ -55,7 +55,7 @@ ga = GeneticAlgorithm(individual_function=create_individual,
                       max_iterations_number=1000,
                       fitness_function=calculate_fitness,
                       crossover_function=crossover,
-                      fitness_threshold=-180)
+                      fitness_threshold=-3000)
 
 ga.run_algorithm()
 

@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-import pprint
+from tqdm import tqdm
 
 # Exemplary code for setting up and running genetic algorithm
 # ga = GeneticAlgorithm(individual_size=10,
@@ -118,19 +118,15 @@ class GeneticAlgorithm:
             print(self.calculate_fitness(individual))
 
     def run_algorithm(self):
-        while not self.is_goal_met():
+        for _ in tqdm(range(self.max_iterations_number)):
+            if self.is_goal_met():
+                break
             self.select_individuals()
             self.crossover_individuals()
             self.mutate_individuals()
             self.iterations_number += 1
             self.save_mean_fitness()
 
-        print("Population found: ")
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(self.Population)
-        print("Fitness values:")
-        self.print_fitness_values()
-        print("Best individual:")
-        print(self.find_best_individual())
+        print("Best individual:", self.find_best_individual())
 
         self.plot_stats()
