@@ -49,12 +49,13 @@ def calculate_fitness(individual):
 
 ga = GeneticAlgorithm(individual_function=create_individual,
                       individual_size=NUMBER_OF_CITIES,
-                      population_size=100,
+                      population_size=20,
                       mutation_function=swap_two_elements,
                       mutation_rate=0.1,
                       max_iterations_number=1000,
                       fitness_function=calculate_fitness,
-                      crossover_function=crossover)
+                      crossover_function=crossover,
+                      fitness_threshold=-180)
 
 ga.run_algorithm()
 
