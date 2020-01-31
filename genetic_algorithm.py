@@ -127,6 +127,9 @@ class GeneticAlgorithm:
             self.iterations_number += 1
             self.save_mean_fitness()
 
-        print("Best individual:", self.find_best_individual())
-
         self.plot_stats()
+
+        best_individual = self.find_best_individual()
+        print("Best individual:", best_individual)
+
+        return best_individual
