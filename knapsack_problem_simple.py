@@ -19,10 +19,8 @@ def mutate(chromosome):
 
 def calc_weight(chromosome):
     bits_sum = 0
-    n = 0
-    for bit in chromosome:
+    for n, bit in enumerate(chromosome):
         bits_sum += bit * items_weights[n]
-        n += 1
 
     return bits_sum
 
@@ -33,7 +31,7 @@ def calc_fit(chromosome):
     if epsilon >= 0:
         return epsilon
     else:
-        return backpack_weight - epsilon
+        return total_weight
 
 
 def select(left_chromosome, right_chromosome):
@@ -55,13 +53,13 @@ def print_stats(chromosome, iteration):
 
 
 def run_algorithm(parent):
-    n = 0
-    while calc_fit(parent) > threshold and n < 1000:
+    for n in range(1000):
         child = np.copy(parent)
         child = mutate(child)
         parent = select(parent, child)
         print_stats(parent, n)
-        n += 1
+        if calc_fit(parent) < threshold:
+            break
 
 
 run_algorithm(np.random.randint(2, size=ITEMS_NUMBER))
